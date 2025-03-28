@@ -1,0 +1,10 @@
+This is a placeholder for the 48x48 icon.
+
+In a real implementation, this would be a 48x48 PNG file with the extension icon.
+
+For Chrome extensions, you need icons in multiple sizes:
+- 16x16: Used in the Chrome extension management page
+- 48x48: Used in the Chrome Web Store
+- 128x128: Used in the Chrome Web Store and installation
+
+Please replace this file with a real 48x48 PNG icon before publishing the extension.

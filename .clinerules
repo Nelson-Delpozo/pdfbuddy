@@ -1,0 +1,145 @@
+# PDF Buddy - Project Intelligence
+
+## Project Patterns
+
+### Code Style
+- Use ES6+ JavaScript throughout the project
+- Prefer const over let, and avoid var
+- Use camelCase for variables and functions
+- Use PascalCase for classes and constructors
+- Use arrow functions for callbacks and anonymous functions
+- Add JSDoc comments for all public functions and methods
+- Maintain 2-space indentation for all files
+- Use single quotes for strings unless the string contains single quotes
+- Always use semicolons at the end of statements
+
+### Architecture Patterns
+- Follow module pattern for encapsulation
+- Use event-driven communication between components
+- Implement factory pattern for creating different types of watermarks
+- Use strategy pattern for different PDF generation approaches
+- Maintain clear separation between UI and business logic
+- Implement observer pattern for state changes
+
+### File Organization
+- Group files by feature rather than by type
+- Keep related files close together
+- Use index.js files to expose public API of modules
+- Maintain consistent naming conventions across files
+- Organize CSS with component-specific files
+
+### Chrome Extension Patterns
+- Follow Manifest V3 requirements
+- Use service workers for background scripts
+- Implement content scripts only when necessary
+- Use chrome.storage.sync for user preferences
+- Use chrome.storage.local for larger data
+- Implement proper error handling for all Chrome API calls
+
+## Development Workflow
+
+### Implementation Sequence
+1. Start with core infrastructure and utilities
+2. Implement basic functionality without premium features
+3. Add UI components and user interaction
+4. Implement watermarking capabilities
+5. Add template system and storage
+6. Implement premium feature infrastructure
+7. Add analytics and error tracking
+8. Polish and optimize
+
+### Testing Approach
+- Write unit tests for core utilities and business logic
+- Implement integration tests for feature workflows
+- Test in Chrome browser regularly
+- Verify functionality across different types of web pages
+- Test with various watermark configurations
+- Validate storage and retrieval of settings
+
+### Deployment Process
+- Use semantic versioning (MAJOR.MINOR.PATCH)
+- Test thoroughly before each release
+- Update documentation with each release
+- Maintain a detailed changelog
+- Follow Chrome Web Store submission guidelines
+
+## User Preferences
+
+### UI Preferences
+- Clean, minimal interface
+- Intuitive controls with clear labels
+- Visual feedback for actions
+- Consistent styling throughout
+- Progressive disclosure of advanced features
+- Clear differentiation between free and premium features
+
+### Feature Priorities
+- Fast, reliable PDF generation
+- Simple watermark application
+- Easy template management
+- Intuitive positioning controls
+- Clear feedback during operations
+- Reliable error handling
+
+## Technical Decisions
+
+### PDF Generation
+- Use Chrome's built-in printing capabilities via chrome.tabs.captureVisibleTab and chrome.printing API
+- Apply watermarks using Canvas API
+- Generate PDFs in memory before saving to disk
+- Optimize for performance with large pages
+
+### Watermarking
+- Render watermarks on canvas
+- Support text with various styling options
+- Support images with transparency
+- Implement positioning using relative coordinates
+- Support rotation and scaling
+- Implement opacity controls
+
+### Storage
+- Use chrome.storage.sync for settings and preferences
+- Use chrome.storage.local for templates and larger data
+- Implement proper error handling for storage operations
+- Optimize storage usage to stay within Chrome limits
+
+### Error Handling
+- Implement comprehensive error tracking
+- Provide user-friendly error messages
+- Log detailed error information for debugging
+- Implement recovery mechanisms where possible
+- Track errors in analytics for prioritization
+
+## Known Challenges
+
+### Technical Limitations
+- Chrome's PDF generation capabilities may have limitations
+- Storage limits for chrome.storage APIs
+- Performance considerations for large pages
+- Cross-origin restrictions for content scripts
+- Manifest V3 restrictions on background scripts
+
+### User Experience Challenges
+- Balancing simplicity with functionality
+- Creating intuitive watermark positioning controls
+- Clearly communicating premium features without being intrusive
+- Providing helpful feedback during PDF generation
+- Handling errors gracefully
+
+## Evolution Tracking
+
+### Version 1.0 Goals
+- Basic PDF generation
+- Simple text watermarking
+- Basic template system
+- Context menu and browser action
+- Essential settings storage
+- Error handling foundation
+
+### Future Enhancements
+- Advanced watermark editing
+- Batch processing
+- Cloud storage integration
+- Additional customization options
+- Enhanced template management
+- Integration with other services

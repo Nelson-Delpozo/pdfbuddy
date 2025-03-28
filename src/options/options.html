@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Buddy - Options</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>PDF Buddy Settings</h1>
+      <p class="version">Version 0.1.0</p>
+    </header>
+    
+    <main>
+      <section class="settings-section">
+        <h2>Default Watermark Settings</h2>
+        
+        <div class="form-group">
+          <label for="default-text">Default Watermark Text</label>
+          <input type="text" id="default-text" placeholder="e.g., CONFIDENTIAL">
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="default-position">Default Position</label>
+            <select id="default-position">
+              <option value="center">Center</option>
+              <option value="topLeft">Top Left</option>
+              <option value="topRight">Top Right</option>
+              <option value="bottomLeft">Bottom Left</option>
+              <option value="bottomRight">Bottom Right</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="default-opacity">Default Opacity</label>
+            <input type="range" id="default-opacity" min="0.1" max="1" step="0.1" value="0.5">
+            <span id="opacity-value">50%</span>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="default-color">Default Color</label>
+            <input type="color" id="default-color" value="#FF0000">
+          </div>
+          
+          <div class="form-group">
+            <label for="default-font-size">Default Font Size</label>
+            <input type="range" id="default-font-size" min="12" max="72" step="1" value="48">
+            <span id="font-size-value">48px</span>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="default-font-family">Default Font</label>
+          <select id="default-font-family">
+            <option value="Arial">Arial</option>
+            <option value="Times New Roman">Times New Roman</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Impact">Impact</option>
+          </select>
+        </div>
+      </section>
+      
+      <section class="settings-section">
+        <h2>PDF Settings</h2>
+        
+        <div class="form-group">
+          <label for="save-location">Default Save Location</label>
+          <select id="save-location">
+            <option value="downloads">Downloads Folder</option>
+            <option value="ask">Ask Each Time</option>
+          </select>
+        </div>
+      </section>
+      
+      <section class="settings-section premium-section">
+        <h2>Premium Features <span class="premium-badge">Premium</span></h2>
+        
+        <div class="premium-info">
+          <p>Upgrade to PDF Buddy Premium to unlock advanced features:</p>
+          <ul>
+            <li>Image watermarks</li>
+            <li>Advanced text styling</li>
+            <li>Unlimited templates</li>
+            <li>Batch processing</li>
+            <li>Cloud storage for templates</li>
+            <li>Priority support</li>
+          </ul>
+          
+          <button id="upgrade-button" class="primary-button">Upgrade to Premium</button>
+        </div>
+      </section>
+      
+      <section class="settings-section">
+        <h2>About</h2>
+        
+        <div class="about-info">
+          <p>PDF Buddy is a Chrome extension for saving web pages as PDFs with customizable watermarks.</p>
+          <p>© 2025 PDF Buddy. All rights reserved.</p>
+          
+          <div class="links">
+            <a href="#" id="privacy-policy">Privacy Policy</a>
+            <a href="#" id="terms-of-service">Terms of Service</a>
+            <a href="#" id="contact-support">Contact Support</a>
+          </div>
+        </div>
+      </section>
+    </main>
+    
+    <footer>
+      <button id="save-settings" class="primary-button">Save Settings</button>
+      <button id="reset-settings" class="secondary-button">Reset to Defaults</button>
+    </footer>
+  </div>
+  
+  <div id="save-success" class="notification">Settings saved successfully!</div>
+  
+  <script src="options.js"></script>
+</body>
+</html>

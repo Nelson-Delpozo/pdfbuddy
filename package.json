@@ -1,0 +1,23 @@
+{
+  "name": "pdf-buddy",
+  "version": "0.1.0",
+  "description": "Chrome extension for saving web pages as PDFs with customizable watermarks",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo \"No build process defined yet\"",
+    "lint": "eslint src/**/*.js",
+    "dev": "echo \"No development process defined yet\""
+  },
+  "keywords": [
+    "chrome-extension",
+    "pdf",
+    "watermark"
+  ],
+  "author": "PDF Buddy Team",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "eslint": "^8.57.0"
+  },
+  "dependencies": {}
+}
