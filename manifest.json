@@ -3,6 +3,9 @@
   "name": "PDF Buddy - Save & Watermark",
   "version": "0.1.0",
   "description": "Save web pages as PDF with customizable watermarks. Add text or image watermarks to your PDFs with ease.",
+  "homepage_url": "https://pdfbuddy.app",
+  "author": "PDF Buddy Team <support@pdfbuddy.app>",
+  "short_name": "PDF Buddy",
   "permissions": [
     "activeTab",
     "storage",

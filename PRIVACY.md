@@ -65,12 +65,12 @@ We may update this Privacy Policy from time to time. We will notify you of any c
 
 If you have any questions about this Privacy Policy, please contact us at:
 
-- Email: privacy@pdfbuddy.example.com
-- Website: https://www.pdfbuddy.example.com/privacy
+- Email: support@pdfbuddy.app
+- Website: https://pdfbuddy.app/privacy
 
 ## California Privacy Rights
 
-If you are a California resident, you have specific rights regarding your personal information. Please see our [California Privacy Notice](https://www.pdfbuddy.example.com/california-privacy) for more information.
+If you are a California resident, you have specific rights regarding your personal information. Please see our [California Privacy Notice](https://pdfbuddy.app/california-privacy) for more information.
 
 ## Children's Privacy
 

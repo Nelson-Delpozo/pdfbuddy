@@ -49,6 +49,14 @@ We are currently in the initial setup and foundation phase of the PDF Buddy Chro
 - **Minimal Dependencies**: Focusing on vanilla JavaScript and Chrome APIs to keep the extension lightweight
 - **Storage Strategy**: Using chrome.storage.sync for settings and chrome.storage.local for templates
 - **Error Handling**: Implementing a comprehensive error handling system from the start
+- **Domain Acquisition**: Secured pdfbuddy.app domain and support@pdfbuddy.app email for future infrastructure
+
+### Legal Decisions
+- **Custom Proprietary License**: Created a custom license that restricts distribution to Chrome Web Store only
+- **No Contributions Policy**: Established a policy against accepting external code contributions
+- **Premium Features Protection**: Added license terms to protect premium features from unauthorized access
+- **Intellectual Property Protection**: Implemented strong IP protections in the license
+
 
 ### UI Decisions
 - **Clean Interface**: Prioritizing a minimal, intuitive UI

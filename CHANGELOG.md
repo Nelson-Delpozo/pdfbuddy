@@ -32,6 +32,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Integration tests for watermark functionality
   - End-to-end test framework
   - Manual testing guide
+- Infrastructure:
+  - Acquired pdfbuddy.app domain
+  - Set up support@pdfbuddy.app email
+  - Updated documentation with domain information
+- Legal:
+  - Implemented custom proprietary license
+  - Updated package.json with license reference
+  - Updated README with license information
+  - Created no-contributions policy
 
 ### Changed
 - N/A

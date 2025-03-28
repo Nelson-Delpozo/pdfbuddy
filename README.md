@@ -2,6 +2,9 @@
 
 A Chrome extension for saving web pages as PDFs with customizable watermarks.
 
+**Website**: [pdfbuddy.app](https://pdfbuddy.app)  
+**Support**: [support@pdfbuddy.app](mailto:support@pdfbuddy.app)
+
 ## Features
 
 ### Free Features
@@ -48,4 +51,17 @@ pdfbuddy/
 ```
 
 ## License
-All rights reserved.
+
+PDF Buddy is proprietary software released under a [custom license](LICENSE) that restricts usage and distribution:
+
+- Distribution only through Chrome Web Store
+- No modification or redistribution
+- No reverse engineering
+- Premium features require subscription or purchase
+- All rights reserved
+
+For full license details, see the [LICENSE](LICENSE) file.
+
+## Contact
+
+For questions, feedback, or support, please contact us at [support@pdfbuddy.app](mailto:support@pdfbuddy.app) or visit [pdfbuddy.app](https://pdfbuddy.app).

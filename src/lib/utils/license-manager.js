@@ -142,6 +142,33 @@ export class LicenseManager {
       return false;
     }
     
+    // In production, this would make an API call to verify the license
+    // Example:
+    // try {
+    //   const response = await fetch('https://api.pdfbuddy.app/license/verify', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({
+    //       licenseKey: this.licenseKey
+    //     })
+    //   });
+    //   
+    //   const data = await response.json();
+    //   
+    //   if (data.valid) {
+    //     await this.setLicenseType(data.type, this.licenseKey, new Date(data.expiryDate));
+    //     return true;
+    //   } else {
+    //     await this.setLicenseType(LicenseType.FREE);
+    //     return false;
+    //   }
+    // } catch (error) {
+    //   console.error('License verification failed:', error);
+    //   return true; // Allow offline use
+    // }
+    
     return true;
   }
   
@@ -178,7 +205,28 @@ export class LicenseManager {
     // For now, we'll just accept any key and set a premium license
     
     try {
-      // Set a premium license with a 1-year expiry
+      // In production, this would make an API call to activate the license
+      // Example:
+      // const response = await fetch('https://api.pdfbuddy.app/license/activate', {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify({
+      //     licenseKey: licenseKey
+      //   })
+      // });
+      // 
+      // const data = await response.json();
+      // 
+      // if (data.success) {
+      //   await this.setLicenseType(data.type, licenseKey, new Date(data.expiryDate));
+      //   return true;
+      // } else {
+      //   return false;
+      // }
+      
+      // For now, we'll just accept any key and set a premium license
       const expiryDate = new Date();
       expiryDate.setFullYear(expiryDate.getFullYear() + 1);
       

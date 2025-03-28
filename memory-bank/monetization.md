@@ -136,7 +136,7 @@ class LicenseManager {
   
   async verifyLicense(licenseKey) {
     try {
-      const response = await fetch('https://api.pdfbuddy.com/verify', {
+      const response = await fetch('https://api.pdfbuddy.app/verify', {
         method: 'POST',
         body: JSON.stringify({ licenseKey })
       });

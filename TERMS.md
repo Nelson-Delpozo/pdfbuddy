@@ -64,7 +64,7 @@ The Extension, including all content, features, and functionality, is owned by u
 
 ## Privacy
 
-Your privacy is important to us. Please review our [Privacy Policy](PRIVACY.md) to understand how we collect, use, and disclose information.
+Your privacy is important to us. Please review our [Privacy Policy](https://pdfbuddy.app/privacy) to understand how we collect, use, and disclose information.
 
 ## Disclaimer of Warranties
 
@@ -88,7 +88,7 @@ We may update these Terms from time to time. We will notify you of any changes b
 
 ## Governing Law
 
-These Terms shall be governed by the laws of the State of [Your State], without regard to its conflict of law provisions.
+These Terms shall be governed by the laws of the State of Delaware, without regard to its conflict of law provisions.
 
 ## Dispute Resolution
 
@@ -106,5 +106,5 @@ These Terms constitute the entire agreement between you and PDF Buddy Team regar
 
 If you have any questions about these Terms, please contact us at:
 
-- Email: terms@pdfbuddy.example.com
-- Website: https://www.pdfbuddy.example.com/terms
+- Email: support@pdfbuddy.app
+- Website: https://pdfbuddy.app/terms

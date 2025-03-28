@@ -1,21 +1,86 @@
-MIT License
+# PDF Buddy Proprietary License
 
-Copyright (c) 2025 PDF Buddy Team
+Copyright (c) 2025 PDF Buddy
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+## 1. Definitions
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+- "Software" refers to the PDF Buddy Chrome extension, including all source code, object code, documentation, and any related materials.
+- "Chrome Web Store" refers to Google's official extension marketplace for Chrome browser extensions.
+- "Premium Features" refers to additional functionality available through paid subscription or one-time purchase.
+- "Source Code" refers to the human-readable form of the Software.
+- "Licensor" refers to PDF Buddy and its owners.
+- "You" refers to the individual or entity exercising the rights granted by this License.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+## 2. Grant of License
+
+Subject to the terms and conditions of this License, Licensor hereby grants You a limited, non-exclusive, non-transferable, revocable license to use the Software solely as installed through the Chrome Web Store, for personal or internal business purposes.
+
+## 3. Distribution Restrictions
+
+- The Software may ONLY be distributed through the official Chrome Web Store.
+- You may not redistribute, repackage, or otherwise make the Software available for download outside of the Chrome Web Store.
+- You may not fork, create derivative works, or otherwise modify the Software.
+- You may not sublicense, sell, lease, or rent the Software.
+
+## 4. Usage Restrictions
+
+- You may not reverse engineer, decompile, disassemble, or attempt to derive the source code of the Software.
+- You may not modify, adapt, or alter the Software or any files contained within the extension package.
+- You may not bypass, remove, or circumvent any security measures or premium feature restrictions.
+- You may not use the Software for any unlawful purpose or in any way that violates applicable laws or regulations.
+- You may not use the Software to generate, distribute, or facilitate spam or unsolicited messages.
+- You may not use the Software to infringe upon the intellectual property rights of others.
+
+## 5. Premium Features
+
+- Access to Premium Features requires a valid subscription or one-time purchase.
+- You may not share premium accounts or otherwise enable unauthorized access to Premium Features.
+- You may not attempt to circumvent the licensing or payment mechanisms.
+- The Licensor reserves the right to modify, add, or remove Premium Features at any time.
+- Premium Features are subject to the same usage restrictions as the rest of the Software.
+
+## 6. Intellectual Property
+
+- All title, ownership rights, and intellectual property rights in and to the Software remain with the Licensor.
+- This License does not grant You any rights to trademarks, service marks, or logos of the Licensor.
+- All rights not expressly granted herein are reserved by the Licensor.
+- The structure, organization, and code of the Software are valuable trade secrets and confidential information of the Licensor.
+
+## 7. Updates and Maintenance
+
+- The Licensor may deploy updates to the Software through the Chrome Web Store at any time.
+- The Licensor is under no obligation to provide support, maintenance, or updates for the Software.
+- Updates may add, modify, or remove features, including Premium Features.
+
+## 8. Warranty Disclaimer
+
+THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. THE LICENSOR DOES NOT WARRANT THAT THE SOFTWARE WILL MEET YOUR REQUIREMENTS, THAT THE SOFTWARE WILL BE UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE, OR THAT DEFECTS IN THE SOFTWARE WILL BE CORRECTED.
+
+## 9. Limitation of Liability
+
+IN NO EVENT SHALL THE LICENSOR BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO DAMAGES FOR LOSS OF PROFITS, GOODWILL, USE, DATA, OR OTHER INTANGIBLE LOSSES, ARISING OUT OF OR RELATING TO YOUR USE OR INABILITY TO USE THE SOFTWARE, EVEN IF THE LICENSOR HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+## 10. Termination
+
+- This License is effective until terminated.
+- Your rights under this License will terminate automatically without notice if You fail to comply with any of its terms.
+- The Licensor may terminate this License at any time for any reason.
+- Upon termination, You must cease all use of the Software and delete all copies.
+- The Licensor reserves the right to remove the Software from the Chrome Web Store at any time.
+- Termination does not entitle You to any refund for Premium Features.
+
+## 11. Governing Law
+
+This License shall be governed by and construed in accordance with the laws of the State of Delaware, without regard to its conflict of law provisions.
+
+## 12. Entire Agreement
+
+This License constitutes the entire agreement between You and the Licensor regarding the Software and supersedes all prior agreements and understandings, whether written or oral.
+
+## 13. Contact Information
+
+For questions about this License, please contact:
+- Email: support@pdfbuddy.app
+- Website: https://pdfbuddy.app
+
+By installing, copying, or otherwise using the Software, You agree to be bound by the terms of this License.

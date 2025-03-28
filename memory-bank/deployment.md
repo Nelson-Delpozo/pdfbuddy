@@ -1,9 +1,16 @@
 # PDF Buddy - Deployment Strategy
 
+## Domain and Contact Information
+
+- **Domain**: [pdfbuddy.app](https://pdfbuddy.app)
+- **Support Email**: support@pdfbuddy.app
+- **Primary Website**: https://pdfbuddy.app
+
 ## Chrome Web Store Requirements
 
 ### Store Listing Requirements
 - **Name**: "PDF Buddy - Save & Watermark"
+- **Website**: https://pdfbuddy.app
 - **Summary**: Brief description (max 132 characters)
 - **Description**: Detailed description (max 16,000 characters)
 - **Icon**: 128x128 PNG icon
@@ -195,7 +202,7 @@ jobs:
 
 ### User Feedback Monitoring
 - Chrome Web Store reviews and ratings
-- Support email monitoring
+- Support email monitoring (support@pdfbuddy.app)
 - Social media mentions
 - User surveys
 
@@ -241,6 +248,8 @@ flowchart TD
 - **Data Sharing**: Whether data is shared with third parties
 - **Data Security**: How data is protected
 - **User Rights**: How users can access or delete their data
+- **Contact Information**: support@pdfbuddy.app for privacy inquiries
+- **Policy Location**: https://pdfbuddy.app/privacy
 
 ### Terms of Service
 - **License Terms**: How the software can be used
@@ -248,13 +257,15 @@ flowchart TD
 - **Warranties**: What guarantees are provided (or disclaimed)
 - **Liability**: Limitations of liability
 - **Termination**: Conditions for service termination
+- **Contact Information**: support@pdfbuddy.app for terms inquiries
+- **Terms Location**: https://pdfbuddy.app/terms
 
 ## Support Infrastructure
 
 ### Support Channels
-- **Email Support**: Primary support channel
-- **Documentation**: Self-service help resources
-- **FAQ**: Common questions and answers
+- **Email Support**: support@pdfbuddy.app (primary support channel)
+- **Documentation**: Self-service help resources at https://pdfbuddy.app/docs
+- **FAQ**: Common questions and answers at https://pdfbuddy.app/faq
 - **Community Forum**: Peer support (future consideration)
 
 ### Issue Tracking

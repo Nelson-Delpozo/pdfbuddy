@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Chrome extension for saving web pages as PDFs with customizable watermarks",
   "private": true,
+  "homepage": "https://pdfbuddy.app",
   "scripts": {
     "test": "jest",
     "test:unit": "jest tests/unit",
@@ -17,8 +18,8 @@
     "pdf",
     "watermark"
   ],
-  "author": "PDF Buddy Team",
-  "license": "UNLICENSED",
+  "author": "PDF Buddy Team <support@pdfbuddy.app>",
+  "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
     "eslint": "^8.57.0",
     "jest": "^29.7.0",
