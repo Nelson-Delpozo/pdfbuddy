@@ -133,27 +133,31 @@ export function createImageWatermark(imageData, options = {}) {
  */
 export function applyWatermarkToCanvas(canvas, watermarkConfig) {
   try {
-    // Validate watermark configuration
-    const validatedConfig = validateWatermarkConfig(watermarkConfig);
-    if (!validatedConfig) {
-      throw new Error('Invalid watermark configuration');
+    // Check if watermarkConfig is valid
+    if (!watermarkConfig || !watermarkConfig.type) {
+      // If not valid, try to validate it
+      const validatedConfig = validateWatermarkConfig(watermarkConfig);
+      if (!validatedConfig) {
+        throw new Error('Invalid watermark configuration');
+      }
+      watermarkConfig = validatedConfig;
     }
     
     // Get canvas context
     const ctx = canvas.getContext('2d');
     
     // Apply watermark based on type
-    if (validatedConfig.type === WatermarkType.TEXT) {
-      applyTextWatermark(ctx, canvas.width, canvas.height, validatedConfig);
-    } else if (validatedConfig.type === WatermarkType.IMAGE) {
+    if (watermarkConfig.type === WatermarkType.TEXT) {
+      applyTextWatermark(ctx, canvas.width, canvas.height, watermarkConfig);
+    } else if (watermarkConfig.type === WatermarkType.IMAGE) {
       // Check if image watermarks are available (premium feature)
       if (!isFeatureAvailable(PremiumFeature.IMAGE_WATERMARK)) {
         throw new Error('Image watermarks are a premium feature');
       }
       
-      applyImageWatermark(ctx, canvas.width, canvas.height, validatedConfig);
+      applyImageWatermark(ctx, canvas.width, canvas.height, watermarkConfig);
     } else {
-      throw new Error(`Unknown watermark type: ${validatedConfig.type}`);
+      throw new Error(`Unknown watermark type: ${watermarkConfig.type}`);
     }
     
     return canvas;
@@ -231,18 +235,18 @@ function applyImageWatermark(ctx, width, height, config) {
  */
 function calculatePosition(width, height, position) {
   switch (position) {
-    case WatermarkPosition.CENTER:
-      return { x: width / 2, y: height / 2 };
-    case WatermarkPosition.TOP_LEFT:
-      return { x: width * 0.1, y: height * 0.1 };
-    case WatermarkPosition.TOP_RIGHT:
-      return { x: width * 0.9, y: height * 0.1 };
-    case WatermarkPosition.BOTTOM_LEFT:
-      return { x: width * 0.1, y: height * 0.9 };
-    case WatermarkPosition.BOTTOM_RIGHT:
-      return { x: width * 0.9, y: height * 0.9 };
-    default:
-      return { x: width / 2, y: height / 2 };
+  case WatermarkPosition.CENTER:
+    return { x: width / 2, y: height / 2 };
+  case WatermarkPosition.TOP_LEFT:
+    return { x: width * 0.1, y: height * 0.1 };
+  case WatermarkPosition.TOP_RIGHT:
+    return { x: width * 0.9, y: height * 0.1 };
+  case WatermarkPosition.BOTTOM_LEFT:
+    return { x: width * 0.1, y: height * 0.9 };
+  case WatermarkPosition.BOTTOM_RIGHT:
+    return { x: width * 0.9, y: height * 0.9 };
+  default:
+    return { x: width / 2, y: height / 2 };
   }
 }
 

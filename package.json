@@ -21,12 +21,13 @@
   "author": "PDF Buddy Team <support@pdfbuddy.app>",
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
+    "@babel/preset-env": "^7.26.9",
+    "babel-jest": "^27.5.1",
     "eslint": "^8.57.0",
-    "jest": "^29.7.0",
+    "jest": "^27.5.1",
     "jest-chrome": "^0.8.0",
-    "jest-environment-jsdom": "^29.7.0"
+    "jest-environment-jsdom": "^27.5.1"
   },
-  "dependencies": {},
   "jest": {
     "testEnvironment": "jsdom",
     "setupFiles": [
@@ -36,7 +37,9 @@
       "js",
       "json"
     ],
-    "transform": {},
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
     "testMatch": [
       "**/tests/**/*.test.js"
     ],
@@ -44,6 +47,10 @@
     "coverageDirectory": "coverage",
     "collectCoverageFrom": [
       "src/**/*.js"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/(?!jest-chrome)"
     ]
-  }
+  },
+  "type": "module"
 }
