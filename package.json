@@ -4,7 +4,10 @@
   "description": "Chrome extension for saving web pages as PDFs with customizable watermarks",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration",
+    "test:e2e": "jest tests/e2e",
     "build": "echo \"No build process defined yet\"",
     "lint": "eslint src/**/*.js",
     "dev": "echo \"No development process defined yet\""
@@ -17,7 +20,29 @@
   "author": "PDF Buddy Team",
   "license": "UNLICENSED",
   "devDependencies": {
-    "eslint": "^8.57.0"
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "jest-chrome": "^0.8.0",
+    "jest-environment-jsdom": "^29.7.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFiles": [
+      "jest-chrome"
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "json"
+    ],
+    "transform": {},
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ]
+  }
 }
