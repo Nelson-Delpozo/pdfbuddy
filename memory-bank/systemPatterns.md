@@ -221,11 +221,86 @@ flowchart TD
 - Optimized watermark rendering
 
 ## Security Patterns
-- Content Security Policy implementation
-- Sanitization of user inputs
-- Secure storage of sensitive data
-- Minimal permission requests
-- Isolation of content script execution
+
+```mermaid
+flowchart TD
+    subgraph Input
+        IV[Input Validation]
+        IS[Input Sanitization]
+        DC[Data Constraints]
+    end
+    
+    subgraph Policy
+        CSP[Content Security Policy]
+        PM[Permission Management]
+        SH[Security Headers]
+    end
+    
+    subgraph Storage
+        ES[Encrypted Storage]
+        IM[Integrity Monitoring]
+        SC[Storage Constraints]
+    end
+    
+    subgraph Communication
+        MS[Message Sanitization]
+        OV[Origin Validation]
+        SMP[Secure Message Passing]
+    end
+    
+    IV --> IS
+    IS --> UI[User Interface]
+    DC --> IV
+    
+    CSP --> UI
+    CSP --> API[API Calls]
+    PM --> API
+    SH --> UI
+    
+    ES --> ST[Storage APIs]
+    IM --> ST
+    SC --> ST
+    
+    MS --> COM[Component Communication]
+    OV --> COM
+    SMP --> COM
+```
+
+### Input Security
+- **Validation**: All user inputs are validated against predefined patterns and constraints
+- **Sanitization**: HTML and script content is sanitized to prevent XSS attacks
+- **Type Checking**: Strict type checking is enforced for all function parameters
+- **Length Constraints**: Input length limits are enforced to prevent buffer overflow attacks
+
+### Content Security Policy
+- **Strict CSP**: Restrictive Content Security Policy to prevent XSS and data injection
+- **Resource Restrictions**: Limits on where resources can be loaded from
+- **Inline Script Prevention**: Blocking of inline scripts to prevent injection attacks
+- **Frame Restrictions**: Control over which contexts can frame the extension pages
+
+### Permission Management
+- **Minimal Permissions**: Only requesting permissions that are absolutely necessary
+- **Optional Permissions**: Using optional permissions for features that aren't core
+- **Just-in-time Requests**: Requesting permissions only when needed for specific features
+- **Permission Checking**: Verifying permissions before attempting operations
+
+### Secure Storage
+- **Data Validation**: Validation of all data before storage
+- **Integrity Checking**: Verification that stored data hasn't been tampered with
+- **Sensitive Data Handling**: Special handling for sensitive information
+- **Storage Quotas**: Enforcing limits to prevent denial of service attacks
+
+### Secure Communication
+- **Message Validation**: Validation of all messages between components
+- **Origin Checking**: Verification of message origins
+- **Secure Message Passing**: Using Chrome's secure message passing APIs
+- **Response Sanitization**: Sanitizing responses before processing
+
+### Error Handling
+- **Secure Error Messages**: Not exposing sensitive information in error messages
+- **Graceful Degradation**: Failing safely when errors occur
+- **Error Logging**: Comprehensive logging for security-related errors
+- **Rate Limiting**: Preventing abuse through rate limiting of operations
 
 ## Testing Strategy
 - Unit tests for core components
