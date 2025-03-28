@@ -27,10 +27,10 @@ We are currently in the initial setup and foundation phase of the PDF Buddy Chro
 - ✅ Updating manifest.json with security configurations
 
 ### Basic PDF Generation
-- 🔄 Implementing the core PDF generation functionality
+- ✅ Implementing the core PDF generation functionality
 - ✅ Setting up the content script for page capture
 - ✅ Creating the basic UI components
-- 🔄 Establishing the download mechanism
+- ✅ Establishing the download mechanism
 
 ### Testing and Refinement
 - ⏳ Testing the extension in Chrome
@@ -145,7 +145,8 @@ We are currently in the initial setup and foundation phase of the PDF Buddy Chro
 5. ✅ Implement basic UI components
 6. ✅ Create simple PDF generation functionality
 7. ✅ Implement security infrastructure
-8. ⏳ Test the extension in Chrome
+8. ✅ Implement watermarking functionality
+9. ⏳ Test the extension in Chrome
 
 ## Tomorrow's Goals
 1. Refine the PDF generation functionality
