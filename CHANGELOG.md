@@ -46,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - N/A
 
 ### Fixed
-- N/A
+- Fixed double sanitization issue in watermark.js that was causing integration tests to fail
 
 ## [0.1.0] - 2025-03-28
 

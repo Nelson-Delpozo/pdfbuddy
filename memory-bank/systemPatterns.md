@@ -271,6 +271,7 @@ flowchart TD
 - **Sanitization**: HTML and script content is sanitized to prevent XSS attacks
 - **Type Checking**: Strict type checking is enforced for all function parameters
 - **Length Constraints**: Input length limits are enforced to prevent buffer overflow attacks
+- **Avoiding Double Sanitization**: Checking if data is already sanitized before applying sanitization to prevent unintended side effects
 
 ### Content Security Policy
 - **Strict CSP**: Restrictive Content Security Policy to prevent XSS and data injection

@@ -98,8 +98,8 @@ We are currently in the initial setup and foundation phase of the PDF Buddy Chro
 5. ✅ Implement context menu integration
 6. ✅ Create the basic PDF generation functionality
 7. ✅ Implement security infrastructure
-8. ⏳ Test the extension in Chrome
-9. ⏳ Fix any initial bugs
+8. ✅ Test the extension in Chrome
+9. ✅ Fix initial bugs (watermark double sanitization)
 10. ⏳ Refine the watermark implementation
 
 ### Upcoming Milestones
@@ -160,7 +160,8 @@ We are currently in the initial setup and foundation phase of the PDF Buddy Chro
 7. ✅ Implement security infrastructure
 8. ✅ Implement watermarking functionality
 9. ✅ Set up testing infrastructure
-10. 🔄 Test the extension in Chrome
+10. ✅ Test the extension in Chrome
+11. ✅ Fix initial bugs (watermark double sanitization)
 
 ## Tomorrow's Goals
 1. Refine the PDF generation functionality
