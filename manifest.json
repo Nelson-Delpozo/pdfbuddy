@@ -23,27 +23,19 @@
     "extension_pages": "script-src 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'none'; base-uri 'none'; default-src 'self'"
   },
   "action": {
-    "default_popup": "src/popup/popup.html",
-    "default_icon": {
-      "16": "assets/icons/icon-16.png",
-      "48": "assets/icons/icon-48.png",
-      "128": "assets/icons/icon-128.png"
-    }
+    "default_popup": "src/popup/popup.html"
   },
   "background": {
-    "service_worker": "src/background/background.js"
+    "service_worker": "src/background/background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
       "js": ["src/content/content.js"],
-      "run_at": "document_idle"
+      "run_at": "document_idle",
+      "type": "module"
     }
   ],
-  "options_page": "src/options/options.html",
-  "icons": {
-    "16": "assets/icons/icon-16.png",
-    "48": "assets/icons/icon-48.png",
-    "128": "assets/icons/icon-128.png"
-  }
+  "options_page": "src/options/options.html"
 }

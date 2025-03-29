@@ -64,9 +64,14 @@ export class ErrorHandler {
     this.userFeedbackCallback = userFeedbackCallback;
     this.errorHistory = [];
     
-    // Set up global error handlers
-    if (typeof window !== 'undefined') {
-      this.setupGlobalHandlers();
+    // Set up global error handlers only in browser context
+    try {
+      if (typeof window !== 'undefined' && window !== null) {
+        this.setupGlobalHandlers();
+      }
+    } catch (e) {
+      // Ignore errors when window is not available (e.g., in service worker)
+      console.info('Window not available, skipping global error handlers');
     }
   }
   
@@ -74,30 +79,35 @@ export class ErrorHandler {
    * Sets up global error handlers
    */
   setupGlobalHandlers() {
-    window.onerror = (message, source, lineno, colno, error) => {
-      this.handleError(
-        new PDFBuddyError(
-          message,
-          ErrorType.UNKNOWN,
-          ErrorSeverity.ERROR,
-          error
-        ),
-        { source, lineno, colno }
-      );
-      return true; // Prevents default error handling
-    };
-    
-    window.addEventListener('unhandledrejection', (event) => {
-      this.handleError(
-        new PDFBuddyError(
-          event.reason.message || 'Unhandled Promise Rejection',
-          ErrorType.UNKNOWN,
-          ErrorSeverity.ERROR,
-          event.reason
-        ),
-        { promise: event.promise }
-      );
-    });
+    try {
+      window.onerror = (message, source, lineno, colno, error) => {
+        this.handleError(
+          new PDFBuddyError(
+            message,
+            ErrorType.UNKNOWN,
+            ErrorSeverity.ERROR,
+            error
+          ),
+          { source, lineno, colno }
+        );
+        return true; // Prevents default error handling
+      };
+      
+      window.addEventListener('unhandledrejection', (event) => {
+        this.handleError(
+          new PDFBuddyError(
+            event.reason.message || 'Unhandled Promise Rejection',
+            ErrorType.UNKNOWN,
+            ErrorSeverity.ERROR,
+            event.reason
+          ),
+          { promise: event.promise }
+        );
+      });
+    } catch (e) {
+      // Ignore errors when window methods are not available
+      console.info('Error setting up global handlers:', e.message);
+    }
   }
   
   /**

@@ -44,7 +44,9 @@ export class Analytics {
    * @returns {Promise<void>}
    */
   async initialize() {
-    if (this.initialized) return;
+    if (this.initialized) {
+      return;
+    }
     
     try {
       // Check if analytics is enabled in settings
@@ -108,7 +110,9 @@ export class Analytics {
       return;
     }
     
-    if (!this.enabled) return;
+    if (!this.enabled) {
+      return;
+    }
     
     const event = {
       category,
@@ -133,9 +137,16 @@ export class Analytics {
    */
   logEvent(event) {
     // In a real implementation, this would send the event to an analytics service
-    // For now, we'll just log it to the console in development mode
-    if (process.env.NODE_ENV === 'development') {
-      console.info('Analytics Event:', event);
+    // For now, we'll just log it to the console with a debug flag
+    try {
+      // Check if we're in development mode (can be set in storage)
+      chrome.storage.sync.get('debugMode', (result) => {
+        if (result.debugMode) {
+          console.info('Analytics Event:', event);
+        }
+      });
+    } catch (e) {
+      // Silently fail if storage is not available
     }
   }
   

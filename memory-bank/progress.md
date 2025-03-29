@@ -54,7 +54,7 @@ gantt
 ## In Progress
 - ✅ Testing infrastructure
 - ✅ Testing and refinement
-- ✅ Bug fixes (watermark double sanitization)
+- ✅ Bug fixes (module loading and service worker issues)
 
 
 
@@ -62,7 +62,8 @@ gantt
 
 ### Day 1: Foundation
 - ✅ Testing the extension in Chrome
-- ✅ Fixing initial bugs (watermark double sanitization)
+- ✅ Fixing initial bugs (module loading and service worker issues)
+- ✅ Ensuring extension loads without errors
 
 ### Day 2: Basic Features
 - ⏳ Text watermark implementation
@@ -124,20 +125,23 @@ gantt
 - Unit tests: Started (security utilities)
 - Integration tests: Started (watermark functionality)
 - End-to-end tests: Framework in place
-- Manual testing: Guide created
+- Manual testing: Guide created, initial testing completed
 - Performance testing: Not started
 - Security testing: Started (security utilities)
+- Browser testing: Completed (extension loads and functions in Chrome)
 
 ## Known Issues
 - Icons are currently placeholders and need to be replaced with real icons
-- PDF generation is implemented but needs testing in a real browser environment
+- PDF generation is implemented but needs more extensive testing
 - Security utilities need to be integrated with all features
+- Watermark positioning controls need refinement
+- User feedback during PDF generation needs improvement
 
 ## Blockers
 - No blockers identified
 
 ## Next Milestone
-**End of Day 1**: Basic extension structure and PDF generation working
+**End of Day 1**: Basic extension structure and PDF generation working - ✅ COMPLETED
 
 ### Acceptance Criteria
 - ✅ Extension loads in Chrome
@@ -146,6 +150,17 @@ gantt
 - ✅ Basic PDF generation functions
 - ✅ Error handling for common scenarios
 - ✅ Simple user feedback mechanism
+
+## Upcoming Milestone
+**End of Day 2**: Text watermarking and basic UI components
+
+### Acceptance Criteria
+- ⏳ Enhanced text watermark implementation
+- ⏳ Improved watermark positioning controls
+- ⏳ Expanded styling options
+- ⏳ Settings storage implementation
+- ⏳ Refined user interface
+- ⏳ Improved user feedback mechanisms
 
 ## Notes and Observations
 - Project is in initial setup phase

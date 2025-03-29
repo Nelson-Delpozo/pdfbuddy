@@ -47,6 +47,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Fixed double sanitization issue in watermark.js that was causing integration tests to fail
+- Fixed module loading issues in Chrome extension context
+- Fixed service worker compatibility issues in error-handler.js
+- Fixed window object handling in security.js for environments where window is not available
 
 ## [0.1.0] - 2025-03-28
 

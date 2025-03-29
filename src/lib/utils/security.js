@@ -286,16 +286,33 @@ export function generateRandomString(length = 16) {
   const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   
-  // Use crypto API if available for better randomness
-  if (window.crypto && window.crypto.getRandomValues) {
-    const values = new Uint32Array(length);
-    window.crypto.getRandomValues(values);
+  try {
+    // Try to use crypto API if available for better randomness
+    let cryptoObj = null;
     
-    for (let i = 0; i < length; i++) {
-      result += charset[values[i] % charset.length];
+    // Check for browser crypto
+    if (typeof window !== 'undefined' && window.crypto) {
+      cryptoObj = window.crypto;
+    } else if (typeof crypto !== 'undefined') { // Check for Node.js/service worker crypto
+      cryptoObj = crypto;
     }
-  } else {
-    // Fallback to Math.random (less secure)
+    
+    if (cryptoObj && cryptoObj.getRandomValues) {
+      const values = new Uint32Array(length);
+      cryptoObj.getRandomValues(values);
+      
+      for (let i = 0; i < length; i++) {
+        result += charset[values[i] % charset.length];
+      }
+    } else {
+      // Fallback to Math.random (less secure)
+      for (let i = 0; i < length; i++) {
+        result += charset[Math.floor(Math.random() * charset.length)];
+      }
+    }
+  } catch (e) {
+    // Final fallback if any errors occur
+    console.info('Using fallback random generator');
     for (let i = 0; i < length; i++) {
       result += charset[Math.floor(Math.random() * charset.length)];
     }
