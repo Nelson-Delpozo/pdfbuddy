@@ -23,6 +23,15 @@ const tabSections = {
   templates: document.getElementById('templates-section')
 };
 
+const captureOptions = {
+  pageLayout: document.getElementById('page-layout'),
+  captureFullPage: document.getElementById('capture-full-page'),
+  includeImages: document.getElementById('include-images'),
+  includeBanners: document.getElementById('include-banners'),
+  includeAds: document.getElementById('include-ads'),
+  includeNav: document.getElementById('include-nav')
+};
+
 const watermarkForm = {
   text: document.getElementById('watermark-text'),
   position: document.getElementById('watermark-position'),
@@ -148,18 +157,51 @@ function initializeButtons() {
   
   // Save PDF with last used watermark
   actionButtons.saveWithLast.addEventListener('click', () => {
+    // Show loading overlay
+    showLoadingOverlay('Preparing page for PDF generation...');
+    
+    // Get content filter options
+    const contentFilters = {
+      includeImages: captureOptions.includeImages.checked,
+      includeBanners: captureOptions.includeBanners.checked,
+      includeAds: captureOptions.includeAds.checked,
+      includeNav: captureOptions.includeNav.checked
+    };
+    
+    // Get page layout option
+    const pageLayout = captureOptions.pageLayout.value;
+    
+    // Send message to generate PDF with last watermark
     chrome.runtime.sendMessage({
       action: 'generatePDF',
       tabId: currentTab.id,
       options: {
         useWatermark: true,
-        useLastWatermark: true
+        useLastWatermark: true,
+        pageLayout: pageLayout,
+        contentFilters: contentFilters,
+        captureFullPage: captureOptions.captureFullPage.checked // Use the checkbox value
       }
     }, (response) => {
+      // Hide loading overlay
+      hideLoadingOverlay();
+      
       if (response && response.success) {
         window.close(); // Close popup after successful action
       } else {
-        showError('Failed to generate PDF with last watermark');
+        showError(response?.error || 'Failed to generate PDF with last watermark');
+      }
+    });
+    
+    // Listen for progress updates
+    chrome.runtime.onMessage.addListener(function progressListener(message) {
+      if (message.action === 'pdfProgress') {
+        updateLoadingProgress(message.progress);
+        
+        // If complete, remove listener
+        if (message.complete) {
+          chrome.runtime.onMessage.removeListener(progressListener);
+        }
       }
     });
   });
@@ -380,7 +422,9 @@ function saveCurrentTemplate() {
  * Deletes the current template
  */
 function deleteCurrentTemplate() {
-  if (!currentTemplate) return;
+  if (!currentTemplate) {
+    return;
+  }
   
   chrome.runtime.sendMessage({
     action: 'deleteTemplate',
@@ -401,18 +445,51 @@ function deleteCurrentTemplate() {
  * @param {Object} template - The template to use
  */
 function useTemplate(template) {
+  // Show loading overlay
+  showLoadingOverlay('Preparing page for PDF generation...');
+  
+  // Get content filter options
+  const contentFilters = {
+    includeImages: captureOptions.includeImages.checked,
+    includeBanners: captureOptions.includeBanners.checked,
+    includeAds: captureOptions.includeAds.checked,
+    includeNav: captureOptions.includeNav.checked
+  };
+  
+  // Get page layout option
+  const pageLayout = captureOptions.pageLayout.value;
+  
+  // Send message to generate PDF with template
   chrome.runtime.sendMessage({
     action: 'generatePDF',
     tabId: currentTab.id,
     options: {
       useWatermark: true,
-      watermarkConfig: template
+      watermarkConfig: template,
+      pageLayout: pageLayout,
+      contentFilters: contentFilters,
+      captureFullPage: captureOptions.captureFullPage.checked // Use the checkbox value
     }
   }, (response) => {
+    // Hide loading overlay
+    hideLoadingOverlay();
+    
     if (response && response.success) {
       window.close(); // Close popup after successful action
     } else {
-      showError('Failed to generate PDF with template');
+      showError(response?.error || 'Failed to generate PDF with template');
+    }
+  });
+  
+  // Listen for progress updates
+  chrome.runtime.onMessage.addListener(function progressListener(message) {
+    if (message.action === 'pdfProgress') {
+      updateLoadingProgress(message.progress);
+      
+      // If complete, remove listener
+      if (message.complete) {
+        chrome.runtime.onMessage.removeListener(progressListener);
+      }
     }
   });
 }
@@ -454,57 +531,143 @@ function resetWatermarkForm() {
 }
 
 /**
+ * Creates and shows a loading overlay
+ * @param {string} message - The message to display
+ * @returns {HTMLElement} - The loading overlay element
+ */
+function showLoadingOverlay(message = 'Generating PDF...') {
+  // Create overlay if it doesn't exist
+  let overlay = document.getElementById('loading-overlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'loading-overlay';
+    overlay.className = 'loading-overlay';
+    
+    const spinner = document.createElement('div');
+    spinner.className = 'loading-spinner';
+    overlay.appendChild(spinner);
+    
+    const messageEl = document.createElement('div');
+    messageEl.className = 'loading-message';
+    overlay.appendChild(messageEl);
+    
+    const progress = document.createElement('div');
+    progress.className = 'loading-progress';
+    overlay.appendChild(progress);
+    
+    document.body.appendChild(overlay);
+  }
+  
+  // Update message
+  overlay.querySelector('.loading-message').textContent = message;
+  overlay.querySelector('.loading-progress').textContent = '';
+  
+  // Show overlay
+  overlay.style.display = 'flex';
+  
+  return overlay;
+}
+
+/**
+ * Updates the loading overlay progress
+ * @param {string} progressText - The progress text to display
+ */
+function updateLoadingProgress(progressText) {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) {
+    const progress = overlay.querySelector('.loading-progress');
+    if (progress) {
+      progress.textContent = progressText;
+    }
+  }
+}
+
+/**
+ * Hides the loading overlay
+ */
+function hideLoadingOverlay() {
+  const overlay = document.getElementById('loading-overlay');
+  if (overlay) {
+    overlay.style.display = 'none';
+  }
+}
+
+/**
  * Saves the current page as PDF
  * @param {boolean} useWatermark - Whether to apply a watermark
  */
 function savePDF(useWatermark) {
-  // If not using watermark, just send the message to generate PDF
-  if (!useWatermark) {
-    chrome.runtime.sendMessage({
-      action: 'generatePDF',
-      tabId: currentTab.id,
-      options: { useWatermark: false }
-    }, (response) => {
-      if (response && response.success) {
-        window.close(); // Close popup after successful action
-      } else {
-        showError('Failed to generate PDF');
-      }
-    });
-    return;
-  }
+  // Show loading overlay
+  showLoadingOverlay('Preparing page for PDF generation...');
   
-  // Get watermark configuration from form
-  const watermarkConfig = {
-    type: 'text', // Only text watermarks in free version
-    text: watermarkForm.text.value,
-    position: watermarkForm.position.value,
-    opacity: parseFloat(watermarkForm.opacity.value),
-    color: watermarkForm.color.value,
-    fontSize: parseInt(watermarkForm.size.value),
-    fontFamily: watermarkForm.font.value,
-    rotation: parseInt(watermarkForm.rotation.value)
+  // Get content filter options
+  const contentFilters = {
+    includeImages: captureOptions.includeImages.checked,
+    includeBanners: captureOptions.includeBanners.checked,
+    includeAds: captureOptions.includeAds.checked,
+    includeNav: captureOptions.includeNav.checked
   };
   
-  // Validate watermark text
-  if (!watermarkConfig.text) {
-    alert('Please enter watermark text');
-    return;
+  // Get page layout option
+  const pageLayout = captureOptions.pageLayout.value;
+  
+  // Prepare options object
+  const options = {
+    useWatermark: useWatermark,
+    pageLayout: pageLayout,
+    contentFilters: contentFilters,
+    captureFullPage: captureOptions.captureFullPage.checked // Use the checkbox value
+  };
+  
+  // Add watermark config if needed
+  if (useWatermark) {
+    // Get watermark configuration from form
+    const watermarkConfig = {
+      type: 'text', // Only text watermarks in free version
+      text: watermarkForm.text.value,
+      position: watermarkForm.position.value,
+      opacity: parseFloat(watermarkForm.opacity.value),
+      color: watermarkForm.color.value,
+      fontSize: parseInt(watermarkForm.size.value),
+      fontFamily: watermarkForm.font.value,
+      rotation: parseInt(watermarkForm.rotation.value)
+    };
+    
+    // Validate watermark text
+    if (!watermarkConfig.text) {
+      hideLoadingOverlay();
+      alert('Please enter watermark text');
+      return;
+    }
+    
+    options.watermarkConfig = watermarkConfig;
   }
   
-  // Send message to generate PDF with watermark
+  // Send message to generate PDF
   chrome.runtime.sendMessage({
     action: 'generatePDF',
     tabId: currentTab.id,
-    options: {
-      useWatermark: true,
-      watermarkConfig: watermarkConfig
-    }
+    options: options
   }, (response) => {
+    // Hide loading overlay
+    hideLoadingOverlay();
+    
     if (response && response.success) {
       window.close(); // Close popup after successful action
     } else {
-      showError('Failed to generate PDF with watermark');
+      showError(response?.error || 'Failed to generate PDF');
+    }
+  });
+  
+  // Listen for progress updates
+  chrome.runtime.onMessage.addListener(function progressListener(message) {
+    if (message.action === 'pdfProgress') {
+      updateLoadingProgress(message.progress);
+      
+      // If complete, remove listener
+      if (message.complete) {
+        chrome.runtime.onMessage.removeListener(progressListener);
+      }
     }
   });
 }

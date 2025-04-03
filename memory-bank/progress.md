@@ -56,6 +56,21 @@ gantt
   - ✅ Created PDF library wrapper module
   - ✅ Implemented PDF generation from captured screenshots
   - ✅ Added text watermarking directly in PDF
+- ✅ Build System
+  - ✅ Added webpack for bundling
+  - ✅ Set up development and production builds
+  - ✅ Configured asset copying and processing
+  - ✅ Updated manifest.json for bundled files
+  - ✅ Fixed CSP issues with bundled code
+- ✅ Full-Page PDF Capture
+  - ✅ Implemented scrolling screenshot approach
+  - ✅ Added UI option to enable/disable full-page capture
+  - ✅ Enhanced content script for scrolling and stitching
+  - ✅ Added proper page preparation for PDF generation
+  - ✅ Implemented smart page layout detection
+  - ✅ Added content filtering options
+  - ✅ Implemented pagination for multi-page PDFs
+  - ✅ Added progress overlay and feedback
 
 ## In Progress
 - ✅ Testing infrastructure
@@ -150,11 +165,17 @@ gantt
 - Watermark positioning controls need refinement
 - User feedback during PDF generation needs improvement
 - jsPDF integration needs more testing with different types of web pages
-- PDF generation currently only captures the visible part of the page, not the full page
 - Image watermarks need to be fully implemented and tested
 
 ## Blockers
 - ✅ Fixed: PDF generation error when clicking the create PDF button
+  - Fixed error in error-handler.js by adding null check for logCallback function
+  - Fixed PDF merging logic in pdf-generator.js to properly add pages from other PDFs
+  - Updated content.js to properly handle processImage action
+  - Fixed captureFullPage option in pdf-generator.js to restore current screen vs full page choice
+  - Added explicit "Capture Full Page" checkbox to popup.html for better user control
+  - Updated all PDF generation functions to use the new checkbox value
+  - Implemented full page capture functionality in content.js using canvas to capture the entire page
 - No current blockers identified
 
 ## Next Milestone
@@ -187,6 +208,12 @@ gantt
 - Day 1 completed successfully with all planned features implemented
 - Fixed critical PDF generation bug to ensure core functionality works properly
 - Integrated jsPDF for proper PDF generation and watermarking
-- Current implementation captures only the visible part of the page, which may be a limitation for some users
-- Need to consider full-page capture in future iterations
-- PDF generation with watermarking is now working correctly
+- Added webpack build system to bundle the extension
+- Fixed CSP issues by bundling jsPDF with the extension code
+- Removed unsafe-eval from CSP by using proper bundling
+- Extension now loads correctly in Chrome with bundled files
+- Build process automatically updates paths in manifest.json
+- Implemented full-page PDF capture using a scrolling screenshot approach
+- Added a checkbox option in the UI to enable/disable full-page capture
+- Enhanced content script to handle scrolling and stitching of screenshots
+- PDF generation now captures the entire page, not just the visible portion

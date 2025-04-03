@@ -47,6 +47,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Implemented PDF generation from captured screenshots
   - Added text watermarking directly in PDF
   - Added support for image watermarks (premium feature)
+- Build System:
+  - Added webpack for bundling
+  - Set up development and production builds
+  - Configured asset copying and processing
+  - Updated manifest.json for bundled files
+  - Fixed CSP issues with bundled code
+- Full-Page PDF Capture:
+  - Implemented scrolling screenshot approach
+  - Added UI option to enable/disable full-page capture
+  - Enhanced content script for scrolling and stitching
+  - Added proper page preparation for PDF generation
+  - Implemented smart page layout detection (auto, portrait, landscape)
+  - Added content filtering options (images, banners, ads, navigation)
+  - Implemented pagination for multi-page PDFs
+  - Added progress overlay with real-time feedback
 
 ### Changed
 - N/A
@@ -61,6 +76,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated watermarking process to work with image data instead of PDF data
 - Fixed scale parameter validation in PDF generation to ensure it's always a valid number
 - Improved options validation to handle missing or invalid parameters gracefully
+- Fixed partial page capture issue by implementing scrolling screenshot approach for full-page PDF generation
+- Fixed "Failed to generate PDF" error when clicking the create PDF button:
+  - Added null check for logCallback function in error-handler.js
+  - Fixed PDF merging logic in pdf-generator.js to properly add pages from other PDFs
+  - Updated content.js to properly handle processImage action
+  - Fixed captureFullPage option in pdf-generator.js to default to false (current screen only)
+  - Added explicit "Capture Full Page" checkbox to popup.html for better user control
+  - Updated all PDF generation functions to use the new checkbox value
+  - Implemented full page capture functionality in content.js using canvas to capture the entire page
 
 ## [0.1.0] - 2025-03-28
 

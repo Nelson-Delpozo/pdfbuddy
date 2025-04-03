@@ -274,72 +274,70 @@ export function pdfToBlob(pdf) {
 }
 
 /**
- * Creates a PDF from an image
+ * Creates a PDF from an image with pre-processed dimensions
  * @param {string} imageData - The image data as a data URL
+ * @param {Object} dimensions - The image dimensions
+ * @param {number} dimensions.width - The image width
+ * @param {number} dimensions.height - The image height
+ * @param {string} dimensions.orientation - The image orientation ('landscape' or 'portrait')
  * @param {Object} options - PDF creation options
  * @returns {jsPDF} - The PDF document
  */
-export function createPdfFromImage(imageData, options = {}) {
+export function createPdfFromImage(imageData, dimensions, options = {}) {
   try {
-    // Create a new image element to get dimensions
-    const img = new Image();
-    img.src = imageData;
+    // Use provided dimensions or default to options
+    const orientation = dimensions?.orientation || options.orientation || 'portrait';
     
-    // Wait for the image to load
-    return new Promise((resolve, reject) => {
-      img.onload = () => {
-        try {
-          // Determine orientation based on image dimensions
-          const orientation = img.width > img.height ? 'landscape' : 'portrait';
-          
-          // Create PDF with appropriate orientation
-          const pdf = createPdf({
-            orientation,
-            ...options
-          });
-          
-          // Get page dimensions
-          const pageWidth = pdf.internal.pageSize.getWidth();
-          const pageHeight = pdf.internal.pageSize.getHeight();
-          
-          // Calculate image dimensions to fit the page
-          const imgRatio = img.width / img.height;
-          const pageRatio = pageWidth / pageHeight;
-          
-          let imgWidth, imgHeight;
-          
-          if (imgRatio > pageRatio) {
-            // Image is wider than the page ratio
-            imgWidth = pageWidth;
-            imgHeight = pageWidth / imgRatio;
-          } else {
-            // Image is taller than the page ratio
-            imgHeight = pageHeight;
-            imgWidth = pageHeight * imgRatio;
-          }
-          
-          // Center the image on the page
-          const x = (pageWidth - imgWidth) / 2;
-          const y = (pageHeight - imgHeight) / 2;
-          
-          // Add the image to the PDF
-          addImageToPdf(pdf, imageData, {
-            x,
-            y,
-            width: imgWidth,
-            height: imgHeight
-          });
-          
-          resolve(pdf);
-        } catch (error) {
-          reject(error);
-        }
-      };
-      
-      img.onerror = () => {
-        reject(new Error('Failed to load image'));
-      };
+    // Create PDF with appropriate orientation
+    const pdf = createPdf({
+      orientation,
+      ...options
     });
+    
+    // Get page dimensions
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    
+    // If we have image dimensions, use them to calculate the proper size
+    if (dimensions && dimensions.width && dimensions.height) {
+      // Calculate image dimensions to fit the page
+      const imgRatio = dimensions.width / dimensions.height;
+      const pageRatio = pageWidth / pageHeight;
+      
+      let imgWidth, imgHeight;
+      
+      if (imgRatio > pageRatio) {
+        // Image is wider than the page ratio
+        imgWidth = pageWidth;
+        imgHeight = pageWidth / imgRatio;
+      } else {
+        // Image is taller than the page ratio
+        imgHeight = pageHeight;
+        imgWidth = pageHeight * imgRatio;
+      }
+      
+      // Center the image on the page
+      const x = (pageWidth - imgWidth) / 2;
+      const y = (pageHeight - imgHeight) / 2;
+      
+      // Add the image to the PDF
+      addImageToPdf(pdf, imageData, {
+        x,
+        y,
+        width: imgWidth,
+        height: imgHeight
+      });
+      
+      return pdf;
+    } else {
+      // If no dimensions provided, add image at default size
+      addImageToPdf(pdf, imageData, {
+        x: 0,
+        y: 0
+      });
+      
+      return pdf;
+    }
   } catch (error) {
     const pdfError = errorHandler.createPDFGenerationError(
       `Failed to create PDF from image: ${error.message}`,

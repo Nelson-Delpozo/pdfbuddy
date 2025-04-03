@@ -108,7 +108,7 @@ export async function generatePdfFromTab(tabId, options = {}) {
     
     // Prepare print settings
     const printSettings = {
-      landscape: pdfOptions.landscape,
+      landscape: pdfOptions.landscape || pdfOptions.pageLayout === 'landscape',
       displayHeaderFooter: false,
       printBackground: pdfOptions.includeBackground,
       scale: pdfOptions.scale,
@@ -124,34 +124,150 @@ export async function generatePdfFromTab(tabId, options = {}) {
       preferCSSPageSize: true
     };
     
+    // Prepare the page for PDF generation
+    await preparePageForPdf(tabId);
+    
     // Capture the visible tab as an image
     const imageData = await chrome.tabs.captureVisibleTab(null, { format: 'png' });
     
-    // Convert the image to a PDF
-    const pdf = await createPdfFromImage(imageData, {
-      orientation: pdfOptions.landscape ? 'landscape' : 'portrait'
+    // Process the image in the content script to get dimensions and apply filters
+    const imageInfo = await processImageInContentScript(tabId, imageData, {
+      pageLayout: pdfOptions.pageLayout || (pdfOptions.landscape ? 'landscape' : 'portrait'),
+      contentFilters: pdfOptions.contentFilters || {},
+      captureFullPage: pdfOptions.captureFullPage === true // Default to false (current screen only)
     });
     
-    // Apply watermark if needed
-    if (pdfOptions.useWatermark && pdfOptions.watermarkConfig) {
-      if (pdfOptions.watermarkConfig.type === 'text') {
-        addTextWatermarkToPdf(pdf, pdfOptions.watermarkConfig);
-      } else if (pdfOptions.watermarkConfig.type === 'image') {
-        addImageWatermarkToPdf(pdf, pdfOptions.watermarkConfig);
+    // Check if we have paginated images
+    if (imageInfo.isPaginated && imageInfo.pages) {
+      // Create a PDF for each page
+      const pdfs = [];
+      
+      // Send progress update
+      chrome.tabs.sendMessage(tabId, {
+        action: 'pdfProgress',
+        progress: 'Creating PDF pages...',
+        complete: false
+      });
+      
+      // Create a PDF for each page
+      for (let i = 0; i < imageInfo.pages.length; i++) {
+        // Send progress update
+        chrome.tabs.sendMessage(tabId, {
+          action: 'pdfProgress',
+          progress: `Creating PDF page ${i + 1}/${imageInfo.pages.length}...`,
+          complete: false
+        });
+        
+        // Create PDF from this page
+        const pdf = await createPdfFromImage(
+          imageInfo.pages[i],
+          imageInfo.dimensions,
+          {
+            orientation: imageInfo.dimensions.orientation
+          }
+        );
+        
+        // Apply watermark if needed
+        if (pdfOptions.useWatermark && pdfOptions.watermarkConfig) {
+          if (pdfOptions.watermarkConfig.type === 'text') {
+            addTextWatermarkToPdf(pdf, pdfOptions.watermarkConfig);
+          } else if (pdfOptions.watermarkConfig.type === 'image') {
+            addImageWatermarkToPdf(pdf, pdfOptions.watermarkConfig);
+          }
+        }
+        
+        pdfs.push(pdf);
       }
+      
+      // Merge PDFs
+      const mergedPdf = pdfs[0]; // Start with the first PDF
+      
+      // Add all other pages to the first PDF
+      for (let i = 1; i < pdfs.length; i++) {
+        // Get the raw data from the other PDFs
+        const pdfData = pdfs[i].output('arraybuffer');
+        
+        // Add the pages from the other PDF to the first PDF
+        const pdfPages = pdfs[i].getNumberOfPages();
+        for (let j = 1; j <= pdfPages; j++) {
+          // Add the page from the other PDF
+          mergedPdf.addPage(pdfs[i].getPage(j));
+        }
+      }
+      
+      // Send progress update
+      chrome.tabs.sendMessage(tabId, {
+        action: 'pdfProgress',
+        progress: 'Finalizing PDF...',
+        complete: false
+      });
+      
+      // Convert PDF to data URL
+      const pdfDataUrl = pdfToDataUrl(mergedPdf);
+      
+      // Download the PDF
+      const downloadId = await downloadPdf(pdfDataUrl, pdfOptions.filename, pdfOptions.autoOpen);
+      
+      // Track the PDF generation
+      trackPdfGeneration(false, pdfOptions.filename);
+      
+      // Send completion update
+      chrome.tabs.sendMessage(tabId, {
+        action: 'pdfProgress',
+        progress: 'PDF generation complete!',
+        complete: true
+      });
+      
+      return downloadId;
+    } else {
+      // Convert the image to a PDF using the processed dimensions
+      const pdf = await createPdfFromImage(
+        imageInfo.imageData, 
+        imageInfo.dimensions, 
+        {
+          orientation: imageInfo.dimensions.orientation
+        }
+      );
+      
+      // Apply watermark if needed
+      if (pdfOptions.useWatermark && pdfOptions.watermarkConfig) {
+        if (pdfOptions.watermarkConfig.type === 'text') {
+          addTextWatermarkToPdf(pdf, pdfOptions.watermarkConfig);
+        } else if (pdfOptions.watermarkConfig.type === 'image') {
+          addImageWatermarkToPdf(pdf, pdfOptions.watermarkConfig);
+        }
+      }
+      
+      // Convert PDF to data URL
+      const pdfDataUrl = pdfToDataUrl(pdf);
+      
+      // Download the PDF
+      const downloadId = await downloadPdf(pdfDataUrl, pdfOptions.filename, pdfOptions.autoOpen);
+      
+      // Track the PDF generation
+      trackPdfGeneration(false, pdfOptions.filename);
+      
+      // Send completion update
+      chrome.tabs.sendMessage(tabId, {
+        action: 'pdfProgress',
+        progress: 'PDF generation complete!',
+        complete: true
+      });
+      
+      return downloadId;
+    }
+  } catch (error) {
+    // Send error update
+    try {
+      chrome.tabs.sendMessage(tabId, {
+        action: 'pdfProgress',
+        progress: `Error: ${error.message}`,
+        complete: true
+      });
+    } catch (e) {
+      // Ignore errors sending message
     }
     
-    // Convert PDF to data URL
-    const pdfDataUrl = pdfToDataUrl(pdf);
-    
-    // Download the PDF
-    const downloadId = await downloadPdf(pdfDataUrl, pdfOptions.filename, pdfOptions.autoOpen);
-    
-    // Track the PDF generation
-    trackPdfGeneration(false, pdfOptions.filename);
-    
-    return downloadId;
-  } catch (error) {
     const pdfError = errorHandler.createPDFGenerationError(
       `Failed to generate PDF from tab ${tabId}: ${error.message}`,
       ErrorSeverity.ERROR,
@@ -346,7 +462,15 @@ export async function applyWatermarkToPdf(pdfData, watermarkConfig) {
     });
     
     // Create a PDF from the data URL
-    const pdf = await createPdfFromImage(dataUrl, {
+    // Since we're in the background script, we can't use the Image object
+    // So we'll use a default dimensions object
+    const defaultDimensions = {
+      width: 800,
+      height: 1000,
+      orientation: 'portrait'
+    };
+    
+    const pdf = await createPdfFromImage(dataUrl, defaultDimensions, {
       orientation: 'portrait' // Default orientation
     });
     
@@ -415,6 +539,118 @@ export async function cancelDownload(downloadId) {
       });
     } catch (error) {
       reject(error);
+    }
+  });
+}
+
+/**
+ * Prepares a page for PDF generation
+ * @param {number} tabId - The ID of the tab to prepare
+ * @returns {Promise<void>} - A promise that resolves when the page is prepared
+ */
+async function preparePageForPdf(tabId) {
+  return new Promise((resolve, reject) => {
+    try {
+      // Send a message to the content script to prepare the page
+      chrome.tabs.sendMessage(
+        tabId,
+        {
+          action: 'preparePage'
+        },
+        response => {
+          if (chrome.runtime.lastError) {
+            // Handle case where content script is not ready or not available
+            console.warn('Content script error:', chrome.runtime.lastError.message);
+            // Resolve anyway to continue with PDF generation
+            resolve();
+            return;
+          }
+          
+          if (!response || !response.success) {
+            console.warn('Page preparation failed:', response?.error || 'Unknown error');
+            // Resolve anyway to continue with PDF generation
+            resolve();
+            return;
+          }
+          
+          // Page preparation successful
+          resolve();
+        }
+      );
+    } catch (error) {
+      console.error('Error sending message to content script:', error);
+      // Resolve anyway to continue with PDF generation
+      resolve();
+    }
+  });
+}
+
+/**
+ * Processes an image in the content script to get dimensions
+ * @param {number} tabId - The ID of the tab to process the image in
+ * @param {string} imageData - The image data as a data URL
+ * @param {Object} options - Processing options
+ * @returns {Promise<Object>} - A promise that resolves with image information
+ */
+async function processImageInContentScript(tabId, imageData, options = {}) {
+  return new Promise((resolve, reject) => {
+    try {
+      // Send a message to the content script to process the image
+      chrome.tabs.sendMessage(
+        tabId,
+        {
+          action: 'processImage',
+          imageData: imageData,
+          options: options
+        },
+        response => {
+          if (chrome.runtime.lastError) {
+            // Handle case where content script is not ready or not available
+            console.warn('Content script error:', chrome.runtime.lastError.message);
+            // Fallback to using the image data without dimensions
+            resolve({
+              imageData: imageData,
+              dimensions: {
+                width: 0,
+                height: 0,
+                orientation: options.orientation || 'portrait'
+              }
+            });
+            return;
+          }
+          
+          if (!response || !response.success) {
+            console.warn('Image processing failed:', response?.error || 'Unknown error');
+            // Fallback to using the image data without dimensions
+            resolve({
+              imageData: imageData,
+              dimensions: {
+                width: 0,
+                height: 0,
+                orientation: options.orientation || 'portrait'
+              }
+            });
+            return;
+          }
+          
+          // Return the processed image information
+          resolve({
+            imageData: response.imageData,
+            dimensions: response.dimensions
+          });
+        }
+      );
+    } catch (error) {
+      console.error('Error sending message to content script:', error);
+      // Fallback to using the image data without dimensions
+      resolve({
+        imageData: imageData,
+        dimensions: {
+          width: 0,
+          height: 0,
+          orientation: options.orientation || 'portrait'
+        }
+      });
     }
   });
 }

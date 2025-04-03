@@ -20,6 +20,46 @@
     <main>
       <!-- Quick Save Tab -->
       <section id="quick-section" class="tab-section active">
+        <div class="options-section">
+          <div class="option-group">
+            <label>Page Layout</label>
+            <select id="page-layout">
+              <option value="auto">Auto (Trim Margins)</option>
+              <option value="portrait">Force Portrait</option>
+              <option value="landscape">Force Landscape</option>
+            </select>
+          </div>
+          
+          <div class="option-group">
+            <div class="checkbox-group">
+              <input type="checkbox" id="capture-full-page">
+              <label for="capture-full-page">Capture Full Page</label>
+            </div>
+          </div>
+          
+          <div class="option-group">
+            <label>Content Filters</label>
+            <div class="checkbox-list">
+              <div class="checkbox-group">
+                <input type="checkbox" id="include-images" checked>
+                <label for="include-images">Include Images</label>
+              </div>
+              <div class="checkbox-group">
+                <input type="checkbox" id="include-banners">
+                <label for="include-banners">Include Banners/Headers</label>
+              </div>
+              <div class="checkbox-group">
+                <input type="checkbox" id="include-ads">
+                <label for="include-ads">Include Advertisements</label>
+              </div>
+              <div class="checkbox-group">
+                <input type="checkbox" id="include-nav">
+                <label for="include-nav">Include Navigation Menus</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <div class="action-buttons">
           <button id="save-pdf" class="primary-button">
             <span class="icon">📄</span>

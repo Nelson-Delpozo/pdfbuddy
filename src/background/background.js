@@ -135,6 +135,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   
   // Handle different message actions
   switch (message.action) {
+    case 'captureVisibleTab':
+      // Capture the visible tab for full-page PDF generation
+      chrome.tabs.captureVisibleTab(null, { format: 'png' })
+        .then(imageData => {
+          sendResponse({ success: true, imageData });
+        })
+        .catch(error => {
+          errorHandler.handleError(error);
+          sendResponse({ success: false, error: error.message });
+        });
+      return true;
+      
     case 'generatePDF':
       handleGeneratePDF(message, sender)
         .then(result => sendResponse(result))
@@ -226,23 +238,49 @@ async function handleGeneratePDF(message, sender) {
         left: 0.4,
         right: 0.4
       },
-      autoOpen: options.autoOpen === true
+      autoOpen: options.autoOpen === true,
+      captureFullPage: options.captureFullPage !== false, // Default to true
+      pageLayout: options.pageLayout || 'auto', // New option for page layout
+      contentFilters: options.contentFilters || { // New option for content filters
+        includeImages: true,
+        includeBanners: false,
+        includeAds: false,
+        includeNav: false
+      }
     };
     
     // Check if we need to apply a watermark
-    if (options.useWatermark && options.watermarkConfig) {
-      // Validate the watermark configuration
-      const validatedConfig = validateWatermarkConfig(options.watermarkConfig);
-      if (!validatedConfig) {
-        throw new Error('Invalid watermark configuration');
+    if (options.useWatermark) {
+      if (options.useLastWatermark) {
+        // Get the last used watermark from storage
+        const result = await chrome.storage.local.get('lastWatermark');
+        if (result.lastWatermark) {
+          // Validate the watermark configuration
+          const validatedConfig = validateWatermarkConfig(result.lastWatermark);
+          if (validatedConfig) {
+            // Add watermark config to options
+            pdfOptions.useWatermark = true;
+            pdfOptions.watermarkConfig = validatedConfig;
+          }
+        } else {
+          // If no last watermark, use default
+          pdfOptions.useWatermark = true;
+          pdfOptions.watermarkConfig = { ...DEFAULT_TEXT_WATERMARK };
+        }
+      } else if (options.watermarkConfig) {
+        // Validate the watermark configuration
+        const validatedConfig = validateWatermarkConfig(options.watermarkConfig);
+        if (!validatedConfig) {
+          throw new Error('Invalid watermark configuration');
+        }
+        
+        // Save this watermark as the last used
+        chrome.storage.local.set({ lastWatermark: validatedConfig });
+        
+        // Add watermark config to options
+        pdfOptions.useWatermark = true;
+        pdfOptions.watermarkConfig = validatedConfig;
       }
-      
-      // Save this watermark as the last used
-      chrome.storage.local.set({ lastWatermark: validatedConfig });
-      
-      // Add watermark config to options
-      pdfOptions.useWatermark = true;
-      pdfOptions.watermarkConfig = validatedConfig;
     }
     
     // Generate PDF with all options
@@ -254,3 +292,13 @@ async function handleGeneratePDF(message, sender) {
     return { success: false, error: error.message };
   }
 }
+
+// Listen for progress updates from content scripts
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'pdfProgress') {
+    // Forward progress updates to the popup
+    chrome.runtime.sendMessage(message);
+    sendResponse({ success: true });
+    return true;
+  }
+});

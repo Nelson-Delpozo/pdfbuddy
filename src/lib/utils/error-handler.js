@@ -153,15 +153,27 @@ export class ErrorHandler {
    * @param {Object} metadata - Additional metadata about the error
    */
   logError(error, metadata) {
-    this.logCallback(
-      `[${error.severity.toUpperCase()}] [${error.type}] ${error.message}`,
-      {
-        error,
-        metadata,
-        stack: error.stack,
-        originalError: error.originalError
-      }
-    );
+    if (typeof this.logCallback === 'function') {
+      this.logCallback(
+        `[${error.severity.toUpperCase()}] [${error.type}] ${error.message}`,
+        {
+          error,
+          metadata,
+          stack: error.stack,
+          originalError: error.originalError
+        }
+      );
+    } else {
+      console.error(
+        `[${error.severity.toUpperCase()}] [${error.type}] ${error.message}`,
+        {
+          error,
+          metadata,
+          stack: error.stack,
+          originalError: error.originalError
+        }
+      );
+    }
   }
   
   /**

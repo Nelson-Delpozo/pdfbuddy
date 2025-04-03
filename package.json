@@ -9,9 +9,11 @@
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration",
     "test:e2e": "jest tests/e2e",
-    "build": "echo \"No build process defined yet\"",
+    "build": "webpack --mode=production",
+    "build:dev": "webpack --mode=development",
+    "watch": "webpack --mode=development --watch",
     "lint": "eslint src/**/*.js",
-    "dev": "echo \"No development process defined yet\""
+    "dev": "webpack --mode=development --watch"
   },
   "keywords": [
     "chrome-extension",
@@ -21,12 +23,20 @@
   "author": "PDF Buddy Team <support@pdfbuddy.app>",
   "license": "SEE LICENSE IN LICENSE",
   "devDependencies": {
+    "@babel/core": "^7.26.10",
     "@babel/preset-env": "^7.26.9",
     "babel-jest": "^27.5.1",
+    "babel-loader": "^10.0.0",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^13.0.0",
+    "css-loader": "^7.1.2",
     "eslint": "^8.57.0",
     "jest": "^27.5.1",
     "jest-chrome": "^0.8.0",
-    "jest-environment-jsdom": "^27.5.1"
+    "jest-environment-jsdom": "^27.5.1",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1"
   },
   "jest": {
     "testEnvironment": "jsdom",
@@ -52,7 +62,6 @@
       "/node_modules/(?!jest-chrome)"
     ]
   },
-  "type": "module",
   "dependencies": {
     "jspdf": "^3.0.1"
   }

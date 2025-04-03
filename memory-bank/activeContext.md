@@ -36,6 +36,17 @@ We are now in the Basic Features phase, which focuses on enhancing the watermark
 - ✅ Creating the basic UI components
 - ✅ Establishing the download mechanism
 - ✅ Fixing PDF generation error with proper Chrome API
+- ✅ Implementing smart page layout detection
+- ✅ Adding content filtering options
+- ✅ Implementing pagination for multi-page PDFs
+- ✅ Adding progress overlay and feedback
+
+### Build System
+- ✅ Setting up webpack for bundling
+- ✅ Configuring development and production builds
+- ✅ Setting up asset copying and processing
+- ✅ Updating manifest.json for bundled files
+- ✅ Fixing CSP issues with bundled code
 
 ### Testing and Refinement
 - ✅ Setting up testing infrastructure
@@ -57,14 +68,27 @@ We are now in the Basic Features phase, which focuses on enhancing the watermark
 - **Domain Acquisition**: Secured pdfbuddy.app domain and support@pdfbuddy.app email for future infrastructure
 - **ES Modules**: Using ES modules for better code organization and maintainability
 - **Service Worker**: Implementing proper error handling for service worker environments
+- **Build System**: Added webpack for bundling to resolve CSP and module loading issues
+- **DOM API Handling**: Moving DOM-dependent operations to content scripts to work around service worker limitations
 
 ### Technical Fixes
 - **Module Loading**: Fixed issues with ES module loading in Chrome extension context
 - **Service Worker Compatibility**: Enhanced error handling and security utilities to work in service worker context
-- **Window Object Handling**: Improved code to handle environments where window object is not available
-- **PDF Generation**: Fixed PDF generation by using the correct Chrome API (chrome.tabs.printToPDF)
+- **Window Object Handling**: Improved code to handle environments where window is not available
+- **PDF Generation**: Fixed PDF generation by using the correct Chrome API (chrome.tabs.captureVisibleTab)
 - **Blob Handling**: Updated code to properly handle Blob data for PDF generation and watermarking
 - **Permissions**: Added tabs permission required for PDF generation
+- **CSP Issues**: Fixed Content Security Policy issues by bundling jsPDF with webpack
+- **Manifest Loading**: Fixed manifest loading error by removing unsafe-eval from CSP
+- **DOM API in Service Worker**: Fixed "Image is not defined" error by moving image processing to content script
+- **Full-Page PDF Capture**: Implemented scrolling screenshot approach for capturing the entire page, not just the visible portion
+- **PDF Generation Error**: Fixed "Failed to generate PDF" error by:
+  - Adding null check for logCallback function in error-handler.js
+  - Fixing PDF merging logic in pdf-generator.js
+  - Updating content.js to properly handle processImage action
+  - Fixing captureFullPage option to default to false (current screen only)
+  - Adding explicit "Capture Full Page" checkbox to popup.html for better user control
+  - Implementing full page capture functionality in content.js using canvas to capture the entire page
 
 ### Legal Decisions
 - **Custom Proprietary License**: Created a custom license that restricts distribution to Chrome Web Store only
@@ -79,7 +103,7 @@ We are now in the Basic Features phase, which focuses on enhancing the watermark
 
 ### Feature Decisions
 - **Watermark Implementation**: Using Canvas API for watermark rendering
-- **PDF Generation**: Leveraging Chrome's built-in printing capabilities via printToPDF API
+- **PDF Generation**: Using jsPDF for PDF generation from captured screenshots
 - **Template System**: Creating a flexible template system for watermark configurations
 
 ## Active Considerations
@@ -116,6 +140,8 @@ We are now in the Basic Features phase, which focuses on enhancing the watermark
 9. ✅ Fix initial bugs (module loading and service worker issues)
 10. ✅ Refine the watermark implementation
 11. ✅ Fix PDF generation error with proper Chrome API
+12. ✅ Set up webpack for bundling
+13. ✅ Fix CSP issues with bundled code
 
 ### Current Tasks (Day 2)
 1. ⏳ Enhance text watermark implementation
@@ -139,6 +165,7 @@ We are now in the Basic Features phase, which focuses on enhancing the watermark
   - PDF generation limitations in Chrome API
   - Performance issues with large pages
   - Storage limitations for templates
+  - CSP restrictions affecting third-party libraries
   
 - **Schedule Risks**:
   - Complex watermarking features taking longer than expected
@@ -155,6 +182,7 @@ We are now in the Basic Features phase, which focuses on enhancing the watermark
   - Early prototyping of critical functionality
   - Performance testing throughout development
   - Fallback options for challenging features
+  - Proper bundling to address CSP restrictions
   
 - **Schedule**:
   - Prioritizing core functionality
@@ -188,10 +216,12 @@ We are now in the Basic Features phase, which focuses on enhancing the watermark
 12. ✅ Fix PDF generation error with proper Chrome API
 
 ## Day 2 Goals - IN PROGRESS
-1. ⏳ Refine the PDF generation functionality
-2. ⏳ Enhance the watermark implementation
-3. ⏳ Improve the user interface
-4. ⏳ Add template management
-5. ⏳ Implement settings storage
-6. ⏳ Integrate security utilities with features
-7. ⏳ Add user feedback mechanisms
+1. ✅ Set up webpack for bundling
+2. ✅ Fix CSP issues with bundled code
+3. ✅ Refine the PDF generation functionality
+4. ⏳ Enhance the watermark implementation
+5. ⏳ Improve the user interface
+6. ⏳ Add template management
+7. ⏳ Implement settings storage
+8. ⏳ Integrate security utilities with features
+9. ⏳ Add user feedback mechanisms
