@@ -101,13 +101,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
               const validatedConfig = validateWatermarkConfig(result.lastWatermark);
               if (validatedConfig) {
                 // Generate PDF with the last watermark
-                const pdfData = await generatePdfFromTab(tab.id);
-                const watermarkedPdf = await createWatermarkedPdf(pdfData, validatedConfig);
-                // Download the watermarked PDF
-                chrome.downloads.download({
-                  url: watermarkedPdf,
-                  filename: `${sanitizeString(tab.title)}.pdf`,
-                  saveAs: false
+                await generatePdfFromTab(tab.id, {
+                  useWatermark: true,
+                  watermarkConfig: validatedConfig
                 });
               } else {
                 // If validation fails, generate without watermark
@@ -116,13 +112,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
             } else {
               // If no last watermark, use default
               const defaultConfig = { ...DEFAULT_TEXT_WATERMARK };
-              const pdfData = await generatePdfFromTab(tab.id);
-              const watermarkedPdf = await createWatermarkedPdf(pdfData, defaultConfig);
-              // Download the watermarked PDF
-              chrome.downloads.download({
-                url: watermarkedPdf,
-                filename: `${sanitizeString(tab.title)}.pdf`,
-                saveAs: false
+              await generatePdfFromTab(tab.id, {
+                useWatermark: true,
+                watermarkConfig: defaultConfig
               });
             }
           } catch (error) {
@@ -222,6 +214,21 @@ async function handleGeneratePDF(message, sender) {
     const tabId = sender.tab ? sender.tab.id : message.tabId;
     const options = message.options || {};
     
+    // Extract PDF generation options
+    const pdfOptions = {
+      landscape: options.landscape === true,
+      filename: options.filename,
+      includeBackground: options.includeBackground !== false,
+      scale: typeof options.scale === 'number' ? options.scale : 1.0,
+      margins: options.margins || {
+        top: 0.4,
+        bottom: 0.4,
+        left: 0.4,
+        right: 0.4
+      },
+      autoOpen: options.autoOpen === true
+    };
+    
     // Check if we need to apply a watermark
     if (options.useWatermark && options.watermarkConfig) {
       // Validate the watermark configuration
@@ -230,28 +237,18 @@ async function handleGeneratePDF(message, sender) {
         throw new Error('Invalid watermark configuration');
       }
       
-      // Generate PDF
-      const pdfData = await generatePdfFromTab(tabId, {
-        landscape: options.landscape,
-        filename: options.filename,
-        includeBackground: options.includeBackground,
-        scale: options.scale,
-        margins: options.margins,
-        autoOpen: options.autoOpen
-      });
-      
-      // Apply watermark
-      const watermarkedPdf = await createWatermarkedPdf(pdfData, validatedConfig);
-      
       // Save this watermark as the last used
       chrome.storage.local.set({ lastWatermark: validatedConfig });
       
-      return { success: true, downloadId: watermarkedPdf };
-    } else {
-      // Generate PDF without watermark
-      const downloadId = await generatePdfFromTab(tabId, options);
-      return { success: true, downloadId };
+      // Add watermark config to options
+      pdfOptions.useWatermark = true;
+      pdfOptions.watermarkConfig = validatedConfig;
     }
+    
+    // Generate PDF with all options
+    const downloadId = await generatePdfFromTab(tabId, pdfOptions);
+    
+    return { success: true, downloadId };
   } catch (error) {
     errorHandler.handleError(error);
     return { success: false, error: error.message };

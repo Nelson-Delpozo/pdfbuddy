@@ -7,10 +7,10 @@ gantt
     dateFormat  YYYY-MM-DD
     section Foundation
     Project Setup           :done, a1, 2025-03-28, 1d
-    Core Architecture       :active, a2, 2025-03-28, 1d
-    Basic PDF Generation    :a3, after a2, 1d
+    Core Architecture       :done, a2, 2025-03-28, 1d
+    Basic PDF Generation    :done, a3, after a2, 1d
     section Basic Features
-    Text Watermarks         :b1, 2025-03-29, 1d
+    Text Watermarks         :active, b1, 2025-03-29, 1d
     UI Components           :b2, 2025-03-29, 1d
     Storage System          :b3, 2025-03-29, 1d
     section Advanced Features
@@ -50,13 +50,18 @@ gantt
   - ✅ Custom proprietary license
   - ✅ No-contributions policy
   - ✅ License references in documentation
+- ✅ Fixed PDF generation error (using correct Chrome API)
+- ✅ PDF Library Integration
+  - ✅ Added jsPDF for proper PDF generation
+  - ✅ Created PDF library wrapper module
+  - ✅ Implemented PDF generation from captured screenshots
+  - ✅ Added text watermarking directly in PDF
 
 ## In Progress
 - ✅ Testing infrastructure
 - ✅ Testing and refinement
-- ✅ Bug fixes (module loading and service worker issues)
-
-
+- ✅ Bug fixes (module loading, service worker issues, PDF generation)
+- ⏳ Day 2: Basic Features implementation
 
 ## Pending Features
 
@@ -64,6 +69,7 @@ gantt
 - ✅ Testing the extension in Chrome
 - ✅ Fixing initial bugs (module loading and service worker issues)
 - ✅ Ensuring extension loads without errors
+- ✅ Fixing PDF generation functionality
 
 ### Day 2: Basic Features
 - ⏳ Text watermark implementation
@@ -121,6 +127,14 @@ gantt
 - Testing and refinement: 100% complete
 - Bug fixes: 100% complete
 
+### Sprint Goals (Day 2)
+1. Enhance text watermark implementation
+2. Improve watermark positioning controls
+3. Expand styling options
+4. Implement settings storage
+5. Refine user interface
+6. Improve user feedback mechanisms
+
 ## Testing Status
 - Unit tests: Started (security utilities)
 - Integration tests: Started (watermark functionality)
@@ -132,13 +146,16 @@ gantt
 
 ## Known Issues
 - Icons are currently placeholders and need to be replaced with real icons
-- PDF generation is implemented but needs more extensive testing
 - Security utilities need to be integrated with all features
 - Watermark positioning controls need refinement
 - User feedback during PDF generation needs improvement
+- jsPDF integration needs more testing with different types of web pages
+- PDF generation currently only captures the visible part of the page, not the full page
+- Image watermarks need to be fully implemented and tested
 
 ## Blockers
-- No blockers identified
+- ✅ Fixed: PDF generation error when clicking the create PDF button
+- No current blockers identified
 
 ## Next Milestone
 **End of Day 1**: Basic extension structure and PDF generation working - ✅ COMPLETED
@@ -167,3 +184,9 @@ gantt
 - Focus is on establishing solid foundation
 - Documentation-first approach to ensure clear direction
 - Prioritizing modular architecture for future extensibility
+- Day 1 completed successfully with all planned features implemented
+- Fixed critical PDF generation bug to ensure core functionality works properly
+- Integrated jsPDF for proper PDF generation and watermarking
+- Current implementation captures only the visible part of the page, which may be a limitation for some users
+- Need to consider full-page capture in future iterations
+- PDF generation with watermarking is now working correctly

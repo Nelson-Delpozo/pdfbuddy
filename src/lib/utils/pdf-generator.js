@@ -8,6 +8,13 @@ import { errorHandler, ErrorType, ErrorSeverity } from './error-handler.js';
 import { trackPdfGeneration, trackError } from './analytics.js';
 import { sanitizeString, validateUrl } from './security.js';
 import { ensureFeaturePermissions } from './permissions.js';
+import { 
+  createPdfFromImage, 
+  addTextWatermarkToPdf, 
+  addImageWatermarkToPdf, 
+  pdfToDataUrl, 
+  pdfToBlob 
+} from './pdf-lib.js';
 
 /**
  * PDF generation options
@@ -117,11 +124,28 @@ export async function generatePdfFromTab(tabId, options = {}) {
       preferCSSPageSize: true
     };
     
-    // Generate the PDF data
-    const pdfData = await chrome.tabs.captureTab(tabId, { format: 'png' });
+    // Capture the visible tab as an image
+    const imageData = await chrome.tabs.captureVisibleTab(null, { format: 'png' });
+    
+    // Convert the image to a PDF
+    const pdf = await createPdfFromImage(imageData, {
+      orientation: pdfOptions.landscape ? 'landscape' : 'portrait'
+    });
+    
+    // Apply watermark if needed
+    if (pdfOptions.useWatermark && pdfOptions.watermarkConfig) {
+      if (pdfOptions.watermarkConfig.type === 'text') {
+        addTextWatermarkToPdf(pdf, pdfOptions.watermarkConfig);
+      } else if (pdfOptions.watermarkConfig.type === 'image') {
+        addImageWatermarkToPdf(pdf, pdfOptions.watermarkConfig);
+      }
+    }
+    
+    // Convert PDF to data URL
+    const pdfDataUrl = pdfToDataUrl(pdf);
     
     // Download the PDF
-    const downloadId = await downloadPdf(pdfData, pdfOptions.filename, pdfOptions.autoOpen);
+    const downloadId = await downloadPdf(pdfDataUrl, pdfOptions.filename, pdfOptions.autoOpen);
     
     // Track the PDF generation
     trackPdfGeneration(false, pdfOptions.filename);
@@ -190,31 +214,43 @@ export async function generatePdfFromUrl(url, options = {}) {
  * @throws {Error} - If the options are invalid
  */
 function validatePdfOptions(options) {
-  // Validate scale
-  if (typeof options.scale !== 'number' || options.scale <= 0 || options.scale > 2) {
+  // Ensure options is an object
+  if (!options || typeof options !== 'object') {
+    throw new Error('PDF options must be an object');
+  }
+
+  // Validate scale - ensure it's a number between 0 and 2
+  if (typeof options.scale !== 'number') {
+    options.scale = 1.0; // Set default if not a number
+  } else if (options.scale <= 0 || options.scale > 2) {
     throw new Error('Scale must be a number between 0 and 2');
   }
   
-  // Validate margins
-  const { margins } = options;
-  if (typeof margins !== 'object') {
-    throw new Error('Margins must be an object');
-  }
-  
-  if (typeof margins.top !== 'number' || margins.top < 0) {
-    throw new Error('Top margin must be a non-negative number');
-  }
-  
-  if (typeof margins.bottom !== 'number' || margins.bottom < 0) {
-    throw new Error('Bottom margin must be a non-negative number');
-  }
-  
-  if (typeof margins.left !== 'number' || margins.left < 0) {
-    throw new Error('Left margin must be a non-negative number');
-  }
-  
-  if (typeof margins.right !== 'number' || margins.right < 0) {
-    throw new Error('Right margin must be a non-negative number');
+  // Ensure margins is an object
+  if (!options.margins || typeof options.margins !== 'object') {
+    options.margins = {
+      top: 0.4,
+      bottom: 0.4,
+      left: 0.4,
+      right: 0.4
+    };
+  } else {
+    // Validate individual margins
+    if (typeof options.margins.top !== 'number' || options.margins.top < 0) {
+      options.margins.top = 0.4;
+    }
+    
+    if (typeof options.margins.bottom !== 'number' || options.margins.bottom < 0) {
+      options.margins.bottom = 0.4;
+    }
+    
+    if (typeof options.margins.left !== 'number' || options.margins.left < 0) {
+      options.margins.left = 0.4;
+    }
+    
+    if (typeof options.margins.right !== 'number' || options.margins.right < 0) {
+      options.margins.right = 0.4;
+    }
   }
   
   // Validate filename if provided
@@ -247,7 +283,7 @@ function generateFilename(title) {
 
 /**
  * Downloads a PDF
- * @param {string} pdfData - The PDF data as a base64 string
+ * @param {string} pdfData - The PDF data as a blob URL or base64 string
  * @param {string} filename - The filename to use
  * @param {boolean} autoOpen - Whether to automatically open the PDF
  * @returns {Promise<string>} - The download ID
@@ -276,9 +312,18 @@ async function downloadPdf(pdfData, filename, autoOpen = false) {
           });
         }
         
+        // Revoke the blob URL to free up memory
+        if (pdfData.startsWith('blob:')) {
+          URL.revokeObjectURL(pdfData);
+        }
+        
         resolve(downloadId);
       });
     } catch (error) {
+      // Revoke the blob URL in case of error
+      if (pdfData.startsWith('blob:')) {
+        URL.revokeObjectURL(pdfData);
+      }
       reject(error);
     }
   });
@@ -286,15 +331,43 @@ async function downloadPdf(pdfData, filename, autoOpen = false) {
 
 /**
  * Applies a watermark to a PDF
- * @param {string} pdfData - The PDF data as a base64 string
+ * @param {Blob} pdfData - The PDF data as a Blob
  * @param {Object} watermarkConfig - The watermark configuration
- * @returns {Promise<string>} - The watermarked PDF data
+ * @returns {Promise<string>} - The watermarked PDF data as a data URL
  */
 export async function applyWatermarkToPdf(pdfData, watermarkConfig) {
-  // This is a placeholder for the watermarking functionality
-  // In a real implementation, this would use a PDF manipulation library
-  console.warn('Watermarking functionality not yet implemented');
-  return pdfData;
+  try {
+    // Convert Blob to data URL
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(pdfData);
+    });
+    
+    // Create a PDF from the data URL
+    const pdf = await createPdfFromImage(dataUrl, {
+      orientation: 'portrait' // Default orientation
+    });
+    
+    // Apply watermark based on type
+    if (watermarkConfig.type === 'text') {
+      addTextWatermarkToPdf(pdf, watermarkConfig);
+    } else if (watermarkConfig.type === 'image') {
+      addImageWatermarkToPdf(pdf, watermarkConfig);
+    }
+    
+    // Convert PDF to data URL
+    return pdfToDataUrl(pdf);
+  } catch (error) {
+    const watermarkError = errorHandler.createWatermarkError(
+      `Failed to apply watermark to PDF: ${error.message}`,
+      ErrorSeverity.ERROR,
+      error
+    );
+    errorHandler.handleError(watermarkError);
+    throw watermarkError;
+  }
 }
 
 /**

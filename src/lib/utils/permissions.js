@@ -26,8 +26,8 @@ export const PermissionType = {
  * Maps features to the permissions they require
  */
 export const FeaturePermissions = {
-  PDF_GENERATION: [PermissionType.ACTIVE_TAB, PermissionType.DOWNLOADS],
-  WATERMARK: [PermissionType.ACTIVE_TAB, PermissionType.DOWNLOADS],
+  PDF_GENERATION: [PermissionType.ACTIVE_TAB, PermissionType.DOWNLOADS, PermissionType.TABS],
+  WATERMARK: [PermissionType.ACTIVE_TAB, PermissionType.DOWNLOADS, PermissionType.TABS],
   TEMPLATES: [PermissionType.STORAGE],
   CONTEXT_MENU: [PermissionType.CONTEXT_MENUS, PermissionType.ACTIVE_TAB, PermissionType.DOWNLOADS],
   NOTIFICATIONS: [PermissionType.NOTIFICATIONS],

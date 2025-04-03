@@ -251,12 +251,12 @@ function calculatePosition(width, height, position) {
 }
 
 /**
- * Creates a watermarked PDF
- * @param {string} pdfData - The PDF data as a base64 string
+ * Creates a watermarked image
+ * @param {string} imageData - The image data as a data URL
  * @param {Object} watermarkConfig - The watermark configuration
- * @returns {Promise<string>} - The watermarked PDF data
+ * @returns {Promise<string>} - The watermarked image data as a data URL
  */
-export async function createWatermarkedPdf(pdfData, watermarkConfig) {
+export async function createWatermarkedPdf(imageData, watermarkConfig) {
   try {
     // Validate watermark configuration
     const validatedConfig = validateWatermarkConfig(watermarkConfig);
@@ -264,22 +264,47 @@ export async function createWatermarkedPdf(pdfData, watermarkConfig) {
       throw new Error('Invalid watermark configuration');
     }
     
-    // This is a placeholder for now
-    // In a real implementation, this would:
-    // 1. Convert the PDF data to a canvas
-    // 2. Apply the watermark to the canvas
-    // 3. Convert the canvas back to PDF data
+    // For now, we'll just apply a simple watermark to the image
+    // In a real implementation, we would convert the image to a PDF and then apply the watermark
     
-    console.warn('PDF watermarking not yet implemented');
-    return pdfData;
+    // Create a canvas element
+    const canvas = document.createElement('canvas');
+    const img = new Image();
+    
+    // Wait for the image to load
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = imageData;
+    });
+    
+    // Set canvas dimensions to match the image
+    canvas.width = img.width;
+    canvas.height = img.height;
+    
+    // Draw the image on the canvas
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    
+    // Apply the watermark to the canvas
+    if (validatedConfig.type === WatermarkType.TEXT) {
+      applyTextWatermark(ctx, canvas.width, canvas.height, validatedConfig);
+    } else if (validatedConfig.type === WatermarkType.IMAGE) {
+      applyImageWatermark(ctx, canvas.width, canvas.height, validatedConfig);
+    }
+    
+    // Convert the canvas back to a data URL
+    const watermarkedImageData = canvas.toDataURL('image/png');
+    
+    return watermarkedImageData;
   } catch (error) {
     const watermarkError = errorHandler.createWatermarkError(
-      `Failed to create watermarked PDF: ${error.message}`,
+      `Failed to create watermarked image: ${error.message}`,
       ErrorSeverity.ERROR,
       error
     );
     errorHandler.handleError(watermarkError);
-    trackError('watermark', 'pdf_watermarking_failed', { error: error.message });
+    trackError('watermark', 'image_watermarking_failed', { error: error.message });
     throw watermarkError;
   }
 }

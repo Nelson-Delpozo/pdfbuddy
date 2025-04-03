@@ -10,7 +10,8 @@
     "activeTab",
     "storage",
     "contextMenus",
-    "downloads"
+    "downloads",
+    "tabs"
   ],
   "optional_permissions": [
     "downloads.open",
@@ -20,7 +21,7 @@
     "<all_urls>"
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'none'; base-uri 'none'; default-src 'self'"
+    "extension_pages": "script-src 'self' 'unsafe-eval'; object-src 'none'; frame-ancestors 'none'; form-action 'none'; base-uri 'none'; default-src 'self' blob: data:"
   },
   "action": {
     "default_popup": "src/popup/popup.html"

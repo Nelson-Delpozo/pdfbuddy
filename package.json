@@ -52,5 +52,8 @@
       "/node_modules/(?!jest-chrome)"
     ]
   },
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "jspdf": "^3.0.1"
+  }
 }
